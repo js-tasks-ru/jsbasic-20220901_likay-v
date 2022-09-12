@@ -9,20 +9,8 @@ function print(text) {
  * Эту функцию нужно поменять так,
  * чтобы функция sayHello работала корректно
  */
-function isValid(name) {
-  let result = false;
-  if (name !== null) {
-    if (name.length >= 4) {    
-      for (let char of name) {
-        if (char == ' ') {
-          return false;
-        } else {
-          result = true;
-        }
-      }
-    }
-  }
-  return result;
+function isValid(name){
+  return (name !== null) && (name.length >= 4) && !(name.includes(' '));
 }
 
 function sayHello() {
