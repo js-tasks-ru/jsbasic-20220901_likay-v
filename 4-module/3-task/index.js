@@ -1,33 +1,41 @@
-function highlight (table) {
-  let tbody = table.querySelector('tbody');
-  let trs = tbody.getElementsByTagName('tr');
+const FIRST_COLUMN = 1;
+const SECOND_COLUMN = 2;
+const THIRD_COLUMN = 3;
 
-  for (let i = 0; i < trs.length; i++) {
-    let statusCell = trs[i].cells[3];
-    if (!statusCell.hasAttribute('data-available')) {
-      trs[i].setAttribute('hidden','');
-    } else if (statusCell.dataset.available === "true") {
-      trs[i].classList.add('available');
-    } else {
-      trs[i].classList.add('unavailable');
-    }
+function highlight(table) {
+  const actions = {
+    [THIRD_COLUMN]: (root, td) => {
+      if (td.dataset.available === 'true') {
+        root.classList.toggle('available', true);
+      } else if (td.dataset.available === 'false') {
+        root.classList.toggle('unavailable', true);
+      } else if (!td.hasAttribute('data-available')) {
+        root.hidden = true;
+      }
+    },
+    [SECOND_COLUMN]: (root, td) => {
+      if (td.textContent === 'm') {
+        root.classList.toggle('male', true);
+      } else if (td.textContent === 'f') {
+        root.classList.toggle('female', true);
+      }
+    },
+    [FIRST_COLUMN]: (root, td) => {
+      const age = parseInt(td.textContent, 10);
+
+      if (age < 18) {
+        root.style.textDecoration = 'line-through';
+      }
+    },
+  };
+
+  for (const tr of table.rows) {
+    Array.from(tr.cells).forEach((td, index) => {
+      const fn = actions[index];
+
+      if (typeof fn === 'function') {
+        fn(tr, td);
+      }
+    });
   }
-
-  for (let i = 0; i < trs.length; i++) {
-    let genderCell = trs[i].cells[2];
-    if (genderCell.textContent === "m") {
-      trs[i].classList.add('male')
-    } else if (genderCell.textContent === "f") {
-      trs[i].classList.add('female');
-    }
-  }
-
-  for (let i = 0; i < trs.length; i++) {
-    let ageCell = trs[i].cells[1];
-    if (+ageCell.textContent < 18) {
-      ageCell.parentElement.style.textDecoration = 'line-through'
-    }
-  }
-
-  console.log(trs);
 }
